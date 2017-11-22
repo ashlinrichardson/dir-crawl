@@ -211,7 +211,7 @@ open("id_to_url.txt", "wb").write(str(id_to_url))
 
 pickle.dump(url_to_id, open("url_to_id.p", "wb"))
 pickle.dump(id_to_url, open("id_to_url.p", "wb"))
-pickle.dump(id_to_data, open("id_to_data.p", "wb"))
+# pickle.dump(id_to_data, open("id_to_data.p", "wb"))
 
 ''' # Code for loading from pickle
 if(False):

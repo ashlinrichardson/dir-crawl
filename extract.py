@@ -34,6 +34,7 @@ def parse(f):
     parser.feed(f)
 
 
+# need to remove magic number from here
 for _id in range(0, 26003):
     # if(_id > 4261):
     # sys.exit(1)
