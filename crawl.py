@@ -1,14 +1,33 @@
 #!/usr/bin/env python
-'''20171117 Doesn't explicitly extract hierarchy info re: org. units'''
+'''20171117 Doesn't explicitly extract hierarchy info re: org. units
+20180213 it should'''
 import os
-import sys
 import re
+import sys
 import pickle
 import urllib2
+import datetime
 from HTMLParser import HTMLParser
 
-if not os.path.exists("dat"):
-    os.mkdir("dat")
+
+def pad(s, n):  # pad from left with 0's to fixed length
+    s = str(s)
+    while len(s) < n:
+        s = '0' + s
+    return s
+
+# assume not run multiple times per jour
+t = datetime.date.today()
+dat_f = pad(t.year, 4) + pad(t.month, 2) + pad(t.day, 2) + '_dat'
+
+file_sep = "\\"
+if os.name != 'nt':
+    file_sep = "/"
+
+if not os.path.exists(dat_f):
+    os.mkdir(dat_f)
+
+dat_f = dat_f + file_sep
 
 url_to_id = {}  # assign a file-id to a given URL
 id_to_url = {}  # reverse lookup
@@ -52,7 +71,6 @@ print "startloc", hier
 print "startstem", startpath
 print "startpath", start
 
-sys.exit(1)
 
 # fetch data from a given URL, if we've not yet done so this run
 
@@ -75,14 +93,15 @@ def add(url):
     # add a url to "the" database
     if url not in url_to_id:
         data = wget(url)
-        url_to_id[url]. id_to_url[next_id], id_to_data[next_id] = \
+        url_to_id[url], id_to_url[next_id], id_to_data[next_id] = \
             next_id, url, data
 
         # save the URL in a file
-        open("dat\\"+str(next_id)+"_u.txt", "wb").write(url)
+        open(dat_f + str(next_id)+"_u.txt", "wb").write(url)
 
         # save the retrieved data at a file
-        open("dat\\"+str(next_id)+"_d.txt", "wb").write(data)
+        open(dat_f + str(next_id)+"_d.txt", "wb").write(data)
+
         next_id += 1
         if url in to_visit or url in visited:
             pass  # this URL already in to_visit (this URL queued)
@@ -104,6 +123,7 @@ class MyHTMLParser(HTMLParser):
         if tag == "a":
             # Check the list of defined attributes.
             for name, value in attrs:
+                name = name.lower()
                 # If href defined, print it.
                 if name == "href":
                     if (value[0:9] == bs and
@@ -127,7 +147,8 @@ class MyHTMLParser(HTMLParser):
                                                 first, last = ns.split("+")
                                             except:
                                                 pass
-                                                wf = open("warnings.txt", "a")
+                                                wf = open(dat_f +
+                                                          "warnings.txt", "a")
                                                 wf.write(root + value)
                                             print "\tperson\t" + root + value
                                             add(root + value)
@@ -205,13 +226,13 @@ while len(to_visit) > 0:
 for k in url_to_id:
     print "\t", url_to_id[k], k
 
-open("url_to_id", "wb").write(str(url_to_id))
-open("id_to_url.txt", "wb").write(str(id_to_url))
+open(dat_f + "url_to_id", "wb").write(str(url_to_id))
+open(dat_f + "id_to_url.txt", "wb").write(str(id_to_url))
 # open("id_to_data-dict.txt","wb").write(str(id_to_data))
 
-pickle.dump(url_to_id, open("url_to_id.p", "wb"))
-pickle.dump(id_to_url, open("id_to_url.p", "wb"))
-# pickle.dump(id_to_data, open("id_to_data.p", "wb"))
+pickle.dump(url_to_id, open(dat_f + "url_to_id.p", "wb"))
+pickle.dump(id_to_url, open(dat_f + "id_to_url.p", "wb"))
+# pickle.dump(id_to_data, open("id_to_data.p", "wb"))  # too big
 
 ''' # Code for loading from pickle
 if(False):
