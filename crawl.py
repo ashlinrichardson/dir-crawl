@@ -86,7 +86,7 @@ def wget(url):
         html = response.read().strip()
         return html
 
-# add a URL to the database, assigning an ID in order of discovery
+# add a URL to the database, assigning an ID in order of discovery-- add(.) gets called every time we "discover" a URL (that we want to visit "later")
 
 
 def add(url):
