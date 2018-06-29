@@ -37,8 +37,8 @@ next_id = 0  # assign index to each URL
 visited = []  # list of URL's visited
 to_visit = []  # list of URL's to visit
 
-# encoding functions to obfuscate address
-def incr(c):
+
+def incr(c):  # encoding functions to obfuscate address
     return chr(ord(c) + 1)
 
 
