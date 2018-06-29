@@ -73,8 +73,9 @@ print "startstem", startpath
 print "startpath", start
 
 
-# fetch data from a given URL, if we've not yet done so this run
-
+''' fetch data from a given URL, if we've not yet done so this run..
+..inevitably, pages are listed more than once, so this code avoids
+downloading the same thing more than once by returning the saved copy'''
 
 def wget(url):
     if url in url_to_id:
@@ -89,6 +90,7 @@ def wget(url):
 ''' add a URL to the database, assigning an ID ("take a number" when getting drivers
 license renewed.. add() gets called every time we "discover" a URL (that we want to visit
 "later")'''
+
 
 def add(url):
     global to_visit, visited, next_id, url_to_id
@@ -114,7 +116,8 @@ def add(url):
         # already visited
         return id_to_data[url_to_id[url]]
 
-# HTML parser customized from parse_html.py
+''' HTML parser customized from parse_html.py-- this takes into account specfic
+tags that we expect to encounter in this example'''
 
 
 class MyHTMLParser(HTMLParser):
@@ -155,6 +158,8 @@ class MyHTMLParser(HTMLParser):
                                             print "\tperson\t" + root + value
                                             add(root + value)
 
+'''parse by passing into a parse object'''
+
 
 def parse(f):
     parser = MyHTMLParser()
@@ -164,7 +169,7 @@ def parse(f):
 last_datagrab = None
 
 
-def grab(f):
+def grab(f):  # download and parse a given page
     print "grab", f
     global last_datagrab
     data = wget(f)
