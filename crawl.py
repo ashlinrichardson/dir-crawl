@@ -37,7 +37,7 @@ next_id = 0  # assign index to each URL
 visited = []  # list of URL's visited
 to_visit = []  # list of URL's to visit
 
-
+# encoding functions to obfuscate address
 def incr(c):
     return chr(ord(c) + 1)
 
@@ -65,6 +65,7 @@ hier = dec('@Joefy>CzVojuIjfs')
 startpath = dec('0huet/dhj') + hier
 start = root + startpath
 
+# unobfuscated addresses
 print "basepath", root
 print "script", bs
 print "startloc", hier
