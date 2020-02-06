@@ -4,6 +4,7 @@
 import os
 import re
 import sys
+import time
 import pickle
 import urllib2
 import datetime
@@ -172,7 +173,17 @@ last_datagrab = None
 def grab(f):  # download and parse a given page
     print "grab", f
     global last_datagrab
-    data = wget(f)
+
+    # keep trying to get data
+    data = None
+    while data is None:
+        try:
+            data = wget(f)
+            break
+        except Exception:
+            print("retry")
+            time.sleep(1.)
+
     parse(data)
     last_datagrab = data
     return data
